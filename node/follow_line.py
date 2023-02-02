@@ -9,7 +9,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 THRESH = 80 # Anyting between 120-80 works 
 CONTOUR_COLOR = (0, 255, 0)
-CONTOUR_THICKNESS = 4
+CONTOUR_THICKNESS = 6
 PREVIOUS_CENTER = 0
 
 def get_contour(frame_gray, frame):
@@ -50,7 +50,7 @@ def callback(data):
     x_axis_len = shape[1]
     y_axis_len = shape[0]
     
-    y_axis_margin = y_axis_len - 50 # pixles
+    y_axis_margin = y_axis_len - int(y_axis_len / 12) # pixles
     x_axis_margin = int(CONTOUR_THICKNESS * 1.5)
     
     frame_gray = cv.cvtColor(cv_image, cv.COLOR_BGR2GRAY) # Converts normal rgb to gray scale
@@ -68,12 +68,15 @@ def callback(data):
     if not right_coordinates == None:
         left_coordinates = find_contur(right_coordinates - x_axis_margin)
         if not left_coordinates == None:
-            path_center = int((right_coordinates - left_coordinates) / 2) + left_coordinates
+            path_center = int((right_coordinates - left_coordinates) / 2) + left_coordinates + 80
         else: 
             path_center = right_coordinates
             prev_used = True
             move.linear.x = 0.05 
     else:
+        y_axis_margin = y_axis_len - 450
+        right_coordinates = find_contur(x_axis_len - x_axis_margin)
+        print(right_coordinates)
         path_center = PREVIOUS_CENTER
         prev_used = True
 
